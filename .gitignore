@@ -20,4 +20,6 @@ target/
 
 .env
 node_modules
-a
+
+*.iml
+.idea

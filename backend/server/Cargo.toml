@@ -1,0 +1,23 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.210", features = ["derive"] }
+tokio = { version = "1.40.0", features = ["full"] }
+tokio-macros = { version = "0.2.0-alpha.6" }
+serde_json = "1.0.128"
+common = { path = "../common" }
+axum = "0.7.7"
+axum-extra = { version = "0.9.4", features = ["typed-header"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+deadpool-diesel = { version = "0.6.1", features = ["postgres"] }
+diesel = { version = "2.2.4", features = ["postgres"] }
+diesel_migrations = "2.2.0"
+dotenvy = "0.15"
+lazy_static = "1.5.0"
+jsonwebtoken = "9.3.0"
+tower-http = { version = "0.6.1", features = ["cors", "trace"] }
+async-trait = { version = "0.1.83" }
