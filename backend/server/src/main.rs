@@ -36,10 +36,10 @@ lazy_static::lazy_static! {
          let fmp_api_key = env::var("FMP_API_KEY").expect("FMP_API_KEY must be set");
          let fed_api_key = env::var("FED_API_KEY").expect("FED_API_KEY must be set");
 
-         let secret = &CONFIG.jwt_secret.clone();
+         let secret = jwt_secret.clone();
          let keys = Keys::new(secret.as_bytes());
 
-         return Config{
+         return Config {
              database_url,
              jwt_secret,
              keys,
@@ -53,9 +53,6 @@ lazy_static::lazy_static! {
 async fn main() {
     dotenv().ok();
 
-    println!("bla");
-    tracing::info!("bla");
-
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -63,9 +60,6 @@ async fn main() {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
-
-    println!("bla2");
-    tracing::info!("bla2");
 
     // set up connection pool
     let manager = deadpool_diesel::postgres::Manager::new(
@@ -95,20 +89,12 @@ async fn main() {
         println!("migrations done");
         tracing::info!("migrations done");
     }
-    tracing::info!("bla4");
+    
+    tracing::info!("jwt_secret      {}", &CONFIG.jwt_secret);
+    tracing::info!("fmp_api_key     {}", &CONFIG.fmp_api_key);
+    tracing::info!("fed_api_key     {}", &CONFIG.fed_api_key);
+    tracing::info!("database_url    {}", &CONFIG.database_url);
 
-    // let fe = async {
-    //     let app = Router::new().route("/", get(html));
-    //     let addr = SocketAddr::from(([127, 0, 0, 1], 4000));
-    //     tracing::debug!("listening on {addr}");
-    //     println!("fe listening on {addr}");
-    //     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    //     axum::serve(listener, app)
-    //         .await;
-    // };
-
-    println!("XXXXXXXXXXXXXXXXXXXX");
-    tracing::info!("bla5");
     // build our application with some routes
     let app = Router::new()
         .route("/user/login", post(login))
@@ -142,27 +128,26 @@ async fn main() {
                     // You can use `_span.record("some_other_field", value)` in one of these
                     // closures to attach a value to the initially empty field in the info_span
                     // created above.
+                    tracing::info!("tracing::on_request");
                 })
                 .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
-                    // ...
+             tracing::info!("tracing::on_response");
                 })
                 .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
-                    // ...
+                 tracing::info!("tracing::on_body_chunk");
                 })
                 .on_eos(
                     |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
-                        // ...
+                        tracing::info!("tracing::on_eos");
                     },
                 )
                 .on_failure(
                     |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
-                        // ...
+                        tracing::info!("tracing::on_failure");
                     },
                 ),
         )
         .with_state(pool);
-
-    tracing::info!("bla6");
 
     // run it with hyper
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -172,8 +157,6 @@ async fn main() {
     axum::serve(listener, app)
         .await
         .expect("should listen on port 3000");
-
-    //tokio::join!(fe, be);
 }
 
 /// Utility function for mapping any error into a `500 Internal Server Error`

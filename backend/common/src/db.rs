@@ -17,8 +17,9 @@ pub fn hash_password(password: &str) -> String {
 
 // is it any good? ¯\_(ツ)_/¯
 // https://cloudmaker.dev/authenticate-api-users/
-pub fn verify_password(pw: String, password: String) -> bool {
-    let res = argon2::verify_encoded(&pw, password.as_bytes()).expect("should work");
+pub fn verify_password(pw: &str, password: &str) -> bool {
+    let res =
+        argon2::verify_encoded(pw, password.as_bytes()).expect("verifying password should work");
     res
 }
 

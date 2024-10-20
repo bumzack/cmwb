@@ -18,6 +18,7 @@ pub struct DbFmpStock {
 #[derive(serde::Serialize, serde::Deserialize, Queryable, Selectable)]
 #[diesel(table_name = crate::schema::usr)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
+#[derive(Debug)]
 pub struct DbUser {
     pub id: i32,
     pub username: String,

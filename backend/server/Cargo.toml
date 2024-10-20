@@ -21,3 +21,4 @@ lazy_static = "1.5.0"
 jsonwebtoken = "9.3.0"
 tower-http = { version = "0.6.1", features = ["cors", "trace"] }
 async-trait = { version = "0.1.83" }
+chrono = "0.4.38"
